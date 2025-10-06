@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Game</title>
+</head>
+<body>
+  <h1>Game</h1>
+  <form onsubmit="sendMessage(event)">
+    <input id="messageText" type="text" autocomplete="off" />
+    <button>Send</button>
+  </form>
+  <ul id="messages"></ul>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:8000/game/ws/{{ room_id }}");
+
+    ws.onopen = () => console.log("✅ Connected to server");
+    ws.onerror = err => console.log("❌ Error:", err);
+    ws.onclose = () => console.log("🔒 Connection closed");
+
+    ws.onmessage = event => {
+      const messages = document.getElementById("messages");
+      messages.innerHTML = '';
+      const li = document.createElement("li");
+      li.textContent = event.data;
+      messages.appendChild(li);
+    };
+
+    function sendMessage(event) {
+      const input = document.getElementById("messageText");
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(input.value);
+      } else {
+        alert("WebSocket не підключений!");
+      }
+      input.value = '';
+      event.preventDefault();
+    }
+  </script>
+</body>
+</html>
