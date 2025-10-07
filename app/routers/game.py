@@ -14,7 +14,6 @@ async def game(websocket: WebSocket, room_id: str):
     if user.username != room_id:
         return HTTPException(403, 'This isn\'t your room')
     await websocket.accept()
-    print(room_id)
     mode = websocket.query_params.get('mode', 'add')
 
     if room_id not in connected_clients:

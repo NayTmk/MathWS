@@ -1,10 +1,8 @@
 import jwt
-
 from app.db import get_session
 from app.utils.security import settings
 from app.models import User, TokenPayload
-
-from fastapi import Depends
+from fastapi import Depends, Cookie
 from typing import Annotated
 from jwt import InvalidTokenError
 from pydantic import ValidationError
@@ -13,16 +11,24 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl='/login/access-token')
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl='/login/access-token', auto_error=False)
 
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
-async def get_current_user(session: SessionDep, token: TokenDep) -> User | None:
+async def get_current_user(
+        session: SessionDep, token: TokenDep,
+        access_token: str = Cookie(default=None)
+) -> User | None:
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-        )
+        if access_token:
+            payload = jwt.decode(
+                access_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+            )
+        else:
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+            )
         token_data = TokenPayload(**payload)
     except(InvalidTokenError, ValidationError):
         raise HTTPException(

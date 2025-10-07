@@ -6,7 +6,6 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from app.config import settings
 from app.utils.deps import SessionDep
-from app.models import Token
 from app.utils import security
 from app import crud
 
@@ -30,8 +29,17 @@ async def login_access_token(
     access_token_expire = timedelta(
         minutes=settings.ACCESS_TOKEN_EXPIRE_TIME
     )
-    return Token(
-        access_token=security.create_access_token(
+    access_token = security.create_access_token(
             user.id, expires_delta=access_token_expire
         )
+    response = JSONResponse(
+        {'access_token': access_token, 'token_type': 'bearer'}
     )
+    response.set_cookie(
+        key='access_token',
+        value=access_token,
+        httponly=True,
+        max_age=3600,
+        samesite='lax'
+    )
+    return response
