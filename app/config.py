@@ -9,7 +9,7 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str
     ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_TIME: str
+    ACCESS_TOKEN_EXPIRE_TIME: int
     class Config:
         env_file = '.env'
 

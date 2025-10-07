@@ -13,7 +13,7 @@
   <ul id="messages"></ul>
 
   <script>
-    const ws = new WebSocket("ws://localhost:8000/game/ws/{{ room_id }}");
+    const ws = new WebSocket("ws://localhost:8000/game/ws/{{ room_id }}?mode={{ mode }}");
 
     ws.onopen = () => console.log("✅ Connected to server");
     ws.onerror = err => console.log("❌ Error:", err);

@@ -1,8 +1,7 @@
-import random
-
-from fastapi import APIRouter, WebSocket, Request
+from fastapi import APIRouter, WebSocket, Request, Query, HTTPException
 from app.config import settings
 from app.utils.game_funcs import generate_tasks
+from app.utils.deps import CurrentUser
 
 
 router = APIRouter(prefix='/game', tags=['game'])
@@ -12,15 +11,19 @@ connected_clients = {}
 
 @router.websocket('/ws/{room_id}')
 async def game(websocket: WebSocket, room_id: str):
+    if user.username != room_id:
+        return HTTPException(403, 'This isn\'t your room')
     await websocket.accept()
+    print(room_id)
+    mode = websocket.query_params.get('mode', 'add')
+
     if room_id not in connected_clients:
         connected_clients[room_id] = {'websocket': websocket, 'answer': None}
-        print(connected_clients)
 
     try:
         while True:
             client = connected_clients[room_id]
-            example, answer = generate_tasks('all_operations', 3)
+            example, answer = generate_tasks(mode, 3)
             data = await websocket.receive_text()
             if client['answer'] == None:
                 await websocket.send_text(f'{example} = ?')
@@ -39,10 +42,13 @@ async def game(websocket: WebSocket, room_id: str):
 
 
 @router.get("/")
-async def get(request: Request):
-    room_id = str(random.randint(100, 999))
+async def get(
+        request: Request, user: CurrentUser,
+        mode: str = Query('add'),
+):
+    room_id = user.username
     return settings.TEMPLATES.TemplateResponse(
         request=request,
         name='game.html',
-        context={'request': request, 'room_id': room_id}
+        context={'request': request, 'room_id': room_id, 'mode': mode}
     )

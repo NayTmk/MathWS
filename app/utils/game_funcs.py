@@ -31,6 +31,6 @@ def generate_tasks(
     op = random.choice(list(game_mods[game_mod].keys()))
     func = game_mods[game_mod][op]
     a = random.randint(1, 10**lvl)
-    b = random.randint(1, 10 ** lvl)
+    b = random.randint(1, 10**lvl)
     
     return [f'{a} {op} {b}', func(a, b)]

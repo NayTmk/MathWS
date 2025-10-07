@@ -17,6 +17,7 @@ async def register_user(session: SessionDep, user_data: UserCreate) -> Any:
             detail='The user with this username already exists in the system'
         )
     user_create = UserCreate.model_validate(user_data)
+    print(user_create)
     user = await crud.create_user(session, user_create)
     return user
 
