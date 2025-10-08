@@ -13,7 +13,16 @@
   <ul id="messages"></ul>
 
   <script>
-    const ws = new WebSocket("ws://localhost:8000/game/ws/{{ room_id }}?mode={{ mode }}");
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    const token = getCookie("access_token");
+    console.log("Token:", token);
+
+    const ws = new WebSocket(`ws://127.0.0.1:8000/game/ws/{{ room_id }}?mode={{ mode }}&token=${token}`);
 
     ws.onopen = () => console.log("✅ Connected to server");
     ws.onerror = err => console.log("❌ Error:", err);
