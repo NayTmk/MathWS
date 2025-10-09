@@ -1,6 +1,4 @@
 import pytest
-from sqlalchemy import values
-
 from app.utils import game_funcs
 
 

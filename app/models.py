@@ -6,7 +6,10 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class UserBase(SQLModel):
     username: str = Field(unique=True, min_length=4, max_length=255)
-    email: EmailStr = Field(unique=True, max_length=255, nullable=True)
+    email: EmailStr | None  = Field(
+        default=None, unique=True,
+        max_length=255, nullable=True
+    )
 
 
 class UserPublic(UserBase):
