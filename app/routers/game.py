@@ -2,7 +2,7 @@ from typing import Dict, Any
 import jwt
 from fastapi import APIRouter, WebSocket, Request, Query
 from app.config import settings
-from app.utils.game_funcs import generate_tasks
+from app.utils.game_funcs import game_manager
 from app.utils.deps import CurrentUser
 
 
@@ -64,7 +64,7 @@ async def game(
     try:
         while True:
             client = await manager.get(room_id)
-            example, answer = generate_tasks(mode, 3)
+            example, answer = game_manager.generate_task(mode, 3)
             data = await websocket.receive_text()
 
             if client['answer'] == None:

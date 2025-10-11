@@ -1,0 +1,20 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MathWS</title>
+</head>
+<body>
+    <div class="navigation">
+        {% if not user %}
+            <a>Log in</a>
+        {% else %}
+            <a href="">Profile</a>
+            <a>Log out</a>
+        {% endif %}
+        <a>Leader bord</a>
+    </div>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

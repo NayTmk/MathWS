@@ -33,7 +33,7 @@ async def get_current_user(
     except(InvalidTokenError, ValidationError):
         raise HTTPException(
             status_code=400,
-            detail='Could not validate credentials'
+            detail='You are not authorized'
         )
     user = await session.get(User, token_data.sub)
     if not user:
