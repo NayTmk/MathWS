@@ -1,5 +1,5 @@
 import pytest
-from app.utils import game_funcs
+from app.domain import game_managers
 
 
 def test_generate_tasks_add_correct(monkeypatch):

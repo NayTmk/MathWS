@@ -1,6 +1,42 @@
 import operator
 import random
 
+from typing import Dict, Any
+from starlette.websockets import WebSocket
+
+from app.utils.redis import set_score, delete_score
+
+
+class GameConnectionManager:
+    def __init__(self):
+        self.connected_clients: Dict[str, Dict[str, Any]] = {}
+
+    async def connect(
+            self, room_id: str, websocket: WebSocket
+    ):
+        await websocket.accept()
+        self.connected_clients[room_id] = {
+            'websocket': websocket, 'answer': None
+        }
+        await set_score(room_id, 0)
+
+
+    async def disconnect(self, room_id: str):
+        client = self.connected_clients.pop(room_id, None)
+        if client:
+            ws = client['websocket']
+            if not ws.client_state.name == 'CLOSE':
+                await ws.close()
+            await delete_score(room_id)
+
+    async def get(self, room_id:str):
+        return self.connected_clients.get(room_id)
+
+    async def send(self, room_id: str, msg: str):
+        client = self.connected_clients.get(room_id)
+        if client:
+            await client['websocket'].send_text(msg)
+
 
 class GameTaskManager:
     game_mods = {
@@ -44,6 +80,8 @@ class GameTaskManager:
         return func
 
     def generate_task(self, game_mod='add', lvl=1):
+        if lvl > 10:
+            lvl = 10
         operation = self.get_random_operator(game_mod)
         func = self._get_func(operation)
         a, b = self.generate_numbers(operation, lvl)
@@ -70,4 +108,5 @@ class GameTaskManager:
             b = random.randint(1, max_value)
         return a, b
 
-game_manager = GameTaskManager()
+connection_manager = GameConnectionManager()
+task_manager = GameTaskManager()

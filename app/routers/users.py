@@ -1,8 +1,9 @@
+from fastapi import APIRouter, HTTPException
+from typing import Any
+
 from app import crud
 from app.models import UserPublic, UserCreate
 from app.utils.deps import SessionDep, CurrentUser
-from fastapi import APIRouter, HTTPException
-from typing import Any
 
 
 router = APIRouter(prefix='/user', tags=['user'])
