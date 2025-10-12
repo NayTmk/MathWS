@@ -2,9 +2,9 @@ import operator
 import random
 
 from typing import Dict, Any
-from starlette.websockets import WebSocket
+from starlette.websockets import WebSocket, WebSocketState
 
-from app.utils.redis import set_score, delete_score
+from app.utils.redis import set_score, delete_score, get_score, update_score
 
 
 class GameConnectionManager:
@@ -25,7 +25,7 @@ class GameConnectionManager:
         client = self.connected_clients.pop(room_id, None)
         if client:
             ws = client['websocket']
-            if not ws.client_state.name == 'CLOSE':
+            if not ws.client_state == WebSocketState.DISCONNECTED:
                 await ws.close()
             await delete_score(room_id)
 
@@ -108,5 +108,38 @@ class GameTaskManager:
             b = random.randint(1, max_value)
         return a, b
 
+
+class GameManager:
+    def __init__(self, connection_manager, task_manager):
+        self.connection_manager = connection_manager
+        self.task_manager = task_manager
+
+    async def handle_turn(
+            self, room_id: str, mode='add',
+            client_answer: str | None = None
+    ):
+        client = await self.connection_manager.get(room_id)
+        lvl = (await get_score(room_id) + 100) // 100
+        msg = await self.check_up_answer(
+            client_answer, client, room_id
+        )
+        example, answer = self.task_manager.generate_task(mode, lvl)
+        client['answer'] = str(answer)
+        return {'msg': msg, 'example': example}
+
+    async def check_up_answer(
+            self, client_answer: str | None, client, room_id
+    ):
+        correct_answer = client['answer']
+        if correct_answer is None:
+            msg = 'Вітаю!'
+        elif client_answer == correct_answer:
+            msg = 'Вірно! Наступний приклад:'
+            await update_score(room_id)
+        else:
+            msg = 'Не правильно! Наступний приклад:'
+        return msg
+
 connection_manager = GameConnectionManager()
 task_manager = GameTaskManager()
+game_manager = GameManager(connection_manager, task_manager)
