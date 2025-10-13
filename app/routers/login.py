@@ -6,7 +6,7 @@ from fastapi.params import Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.config import settings
+from app.core.config import settings
 from app.utils.deps import SessionDep
 from app.utils import security
 from app import crud

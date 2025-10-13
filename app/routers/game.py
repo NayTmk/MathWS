@@ -4,7 +4,7 @@ from fastapi import APIRouter, WebSocket, Request, Query
 from jwt import InvalidTokenError
 from starlette.websockets import WebSocketDisconnect
 
-from app.config import settings
+from app.core.config import settings
 from app.utils.deps import CurrentUser
 from app.domain.game_managers import connection_manager, game_manager
 

@@ -1,5 +1,4 @@
 import pytest_asyncio
-from app.models import User, GameSession
 from sqlmodel import SQLModel
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession

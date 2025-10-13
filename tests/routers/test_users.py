@@ -1,6 +1,6 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
-from app.db import get_session
+from app.core.db import get_session
 from app.main import app
 from tests.conftest import override_get_session
 

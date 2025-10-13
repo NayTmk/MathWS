@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Request
 
-from app.config import settings
-from app.utils.deps import CurrentUser
-
+from app import crud
+from app.core.config import settings
+from app.utils.deps import CurrentUser, SessionDep
 
 router = APIRouter()
 
 
 @router.get('/')
 async def main_page(
-        request: Request, user: CurrentUser
+        request: Request, user: CurrentUser, session: SessionDep
 ):
     return settings.TEMPLATES.TemplateResponse(
         request=request,
