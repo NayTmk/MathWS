@@ -1,8 +1,5 @@
-import random
-
 from fastapi import APIRouter, Request
 
-from app import crud
 from app.core.config import settings
 from app.utils.deps import CurrentUser, SessionDep
 

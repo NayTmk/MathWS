@@ -1,3 +1,4 @@
+import asyncio
 import operator
 import random
 
@@ -139,6 +140,13 @@ class GameManager:
         else:
             msg = 'Не правильно! Наступний приклад:'
         return msg
+
+    async def get_timer(
+            self, room_id: str, duration_time: int, on_timeout
+    ):
+        await asyncio.sleep(duration_time)
+        await on_timeout(room_id)
+
 
 connection_manager = GameConnectionManager()
 task_manager = GameTaskManager()

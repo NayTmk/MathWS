@@ -65,9 +65,9 @@ async def get_user_game_list(
     return user_game_sessions
 
 async def create_game_session(
-        session: AsyncSession, user: User, score: int
+        session: AsyncSession, user_id: str, score: int
 ):
-    game_session = GameSession(user_id=user.id, score=score)
+    game_session = GameSession(user_id=user_id, score=score)
     session.add(game_session)
     await session.commit()
     await session.refresh(game_session)

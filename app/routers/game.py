@@ -1,11 +1,16 @@
+import asyncio
 import jwt
 
 from fastapi import APIRouter, WebSocket, Request, Query
 from jwt import InvalidTokenError
+from sqlmodel.ext.asyncio.session import AsyncSession
 from starlette.websockets import WebSocketDisconnect
 
+from app import crud
 from app.core.config import settings
+from app.core.db import engine
 from app.utils.deps import CurrentUser
+from app.utils.redis import get_score
 from app.domain.game_managers import connection_manager, game_manager
 
 
@@ -23,6 +28,7 @@ async def game(
             code=1008, reason='JWT token missing'
         )
         return
+
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY,
@@ -33,6 +39,8 @@ async def game(
         await websocket.close(
             code=1008, reason='Invalid JWT token'
         )
+        return
+
     if room_id != user_id:
         await websocket.close(
             code=1008, reason='Access denied: not your room'
@@ -40,6 +48,17 @@ async def game(
         return
 
     await connection_manager.connect(room_id, websocket)
+
+    async def finish_game(room_id):
+        score = int(await get_score(room_id) or 0)
+        async with AsyncSession(engine) as session:
+            await crud.create_game_session(session, room_id, score)
+        await connection_manager.send(room_id, 'Гра завершина!')
+        await connection_manager.disconnect(room_id)
+
+    asyncio.create_task(
+        game_manager.get_timer(room_id, 120, finish_game)
+    )
 
     try:
         while True:
@@ -49,8 +68,8 @@ async def game(
             )
             msg = f"{response_dct['msg']} {response_dct['example']} = ?"
             await connection_manager.send(room_id, msg)
-
     except WebSocketDisconnect:
+        print('User was disconnected')
         await connection_manager.disconnect(room_id)
 
 
