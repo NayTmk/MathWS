@@ -1,3 +1,5 @@
+import random
+
 from fastapi import APIRouter, Request
 
 from app import crud

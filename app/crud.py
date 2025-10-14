@@ -28,14 +28,16 @@ async def authenticate(
         session: AsyncSession, username: str,
         password: str
 ):
-    db_user = await get_user_by_username(session=session, username=username)
+    db_user = await get_user_by_username(
+        session=session, username=username
+    )
     if not db_user:
         return None
     if not verify_password(password, db_user.hashed_password):
         return None
     return db_user
 
-async def get_leader_bord(session):
+async def get_leader_bord(session: AsyncSession):
     leader_bord = {}
     statement = (
         select(GameSession)
@@ -50,3 +52,23 @@ async def get_leader_bord(session):
         leader_bord[game_session.user.username] = game_session.score
 
     return leader_bord
+
+async def get_user_game_list(
+        session: AsyncSession, user: User
+) -> list[GameSession]:
+    statement = (
+        select(GameSession)
+        .where(GameSession.user_id==user.id)
+    )
+    result = await session.exec(statement)
+    user_game_sessions = result.all()
+    return user_game_sessions
+
+async def create_game_session(
+        session: AsyncSession, user: User, score: int
+):
+    game_session = GameSession(user_id=user.id, score=score)
+    session.add(game_session)
+    await session.commit()
+    await session.refresh(game_session)
+    return game_session
