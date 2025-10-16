@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app import crud
-from app.core.models import GameSessionPublic
+from app.core.models import GameSessionPublic, UserLeaderBoard
 from app.utils.deps import SessionDep, CurrentUser
 
 router = APIRouter(prefix='/api/game', tags=['game'])
@@ -20,7 +20,7 @@ async def last_game_session(session: SessionDep, user: CurrentUser):
     )
     return last_game
 
-@router.get('/leader-bord', response_model=list[GameSessionPublic])
-async def leader_bord(session: SessionDep):
-    leader_bord = await crud.get_leader_bord(session=session)
+@router.get('/leader-board', response_model=list[UserLeaderBoard])
+async def leader_board(session: SessionDep):
+    leader_bord = await crud.get_leader_board(session=session)
     return leader_bord

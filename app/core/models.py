@@ -25,6 +25,20 @@ class UserCreate(UserBase):
     password: str = Field(min_length=4, max_length=255)
 
 
+class UserUpdateData(UserBase):
+    ...
+
+
+class UserUpdatePassword(SQLModel):
+    password: str
+    new_password: str
+
+
+class UserLeaderBoard(SQLModel):
+    username: str
+    best_score: int | None
+
+
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
@@ -60,3 +74,7 @@ class Token(SQLModel):
 
 class TokenPayload(SQLModel):
     sub: str | None = None
+
+
+class Message(SQLModel):
+    message: str

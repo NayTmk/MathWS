@@ -53,6 +53,7 @@ async def game(
         score = int(await get_score(room_id) or 0)
         async with AsyncSession(engine) as session:
             await crud.create_game_session(session, room_id, score)
+            await crud.update_user_best_score(session, room_id, score)
         await connection_manager.send(room_id, 'Гра завершина!')
         await connection_manager.disconnect(room_id)
 

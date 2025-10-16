@@ -37,23 +37,15 @@ async def authenticate(
         return None
     return db_user
 
-async def get_leader_bord(session: AsyncSession):
-    leader_bord = []
+async def get_leader_board(session: AsyncSession):
     statement = (
-        select(GameSession)
-        .options(selectinload(GameSession.user))
-        .order_by(GameSession.score.desc())
+        select(User)
+        .order_by(User.best_score.desc())
         .limit(100)
     )
     result = await session.exec(statement)
-    game_sessions = result.all()
-    for game_session in game_sessions:
-        leader_bord.append(GameSessionPublic(
-            score=game_session.score,
-            session_date=game_session.session_date,
-            username=game_session.user.username
-        ))
-    return leader_bord
+    leader_board = result.all()
+    return leader_board
 
 async def get_user_game_list(
         session: AsyncSession, user_id: str
@@ -85,3 +77,16 @@ async def create_game_session(
     await session.commit()
     await session.refresh(game_session)
     return game_session
+
+async def update_user_best_score(
+        session: AsyncSession, user_id, score
+):
+    statement = (select(User).where(User.id==user_id))
+    result = await session.exec(statement)
+    user = result.first()
+    if (user.best_score or 0) < score:
+        user.best_score = score
+        session.add(user)
+        await session.commit()
+        await session.refresh(user)
+    return user
