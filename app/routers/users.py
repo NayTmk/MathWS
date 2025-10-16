@@ -6,7 +6,7 @@ from app.core.models import UserPublic, UserCreate
 from app.utils.deps import SessionDep, CurrentUser
 
 
-router = APIRouter(prefix='/user', tags=['user'])
+router = APIRouter(prefix='/api/user', tags=['user'])
 
 
 @router.post('/sign-up', response_model=UserPublic)
@@ -22,6 +22,6 @@ async def register_user(session: SessionDep, user_data: UserCreate) -> Any:
     return user
 
 
-@router.get('/me')
-async def read_me(session: SessionDep, current_user: CurrentUser):
+@router.get('/me', response_model=UserPublic)
+async def read_me(current_user: CurrentUser):
     return current_user

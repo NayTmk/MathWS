@@ -1,6 +1,8 @@
 import uuid
 
 from datetime import datetime
+from typing import List
+
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -13,9 +15,10 @@ class UserBase(SQLModel):
     )
 
 
-class UserPublic(UserBase):
+class UserPublic(SQLModel):
     username: str
     best_score: int | None
+    game_list: List['GameSessionPublic']
 
 
 class UserCreate(UserBase):
@@ -37,7 +40,7 @@ class GameSessionBase(SQLModel):
 
 
 class GameSessionPublic(GameSessionBase):
-    user: 'User'
+    username: str | None
     session_date: datetime
 
 
@@ -46,7 +49,6 @@ class GameSession(GameSessionBase, table=True):
     session_date: datetime = Field(
         default_factory=datetime.utcnow, nullable=False
     )
-
     user_id: uuid.UUID = Field(foreign_key='user.id')
     user: 'User' = Relationship(back_populates='game_session')
 

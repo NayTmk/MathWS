@@ -3,7 +3,7 @@ from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 
-from app.core.models import User, UserCreate, UserPublic, GameSession
+from app.core.models import User, UserCreate, UserPublic, GameSession, GameSessionPublic
 from app.utils.security import get_password_hash, verify_password
 
 
@@ -38,7 +38,7 @@ async def authenticate(
     return db_user
 
 async def get_leader_bord(session: AsyncSession):
-    leader_bord = {}
+    leader_bord = []
     statement = (
         select(GameSession)
         .options(selectinload(GameSession.user))
@@ -47,22 +47,35 @@ async def get_leader_bord(session: AsyncSession):
     )
     result = await session.exec(statement)
     game_sessions = result.all()
-
     for game_session in game_sessions:
-        leader_bord[game_session.user.username] = game_session.score
-
+        leader_bord.append(GameSessionPublic(
+            score=game_session.score,
+            session_date=game_session.session_date,
+            username=game_session.user.username
+        ))
     return leader_bord
 
 async def get_user_game_list(
-        session: AsyncSession, user: User
+        session: AsyncSession, user_id: str
 ) -> list[GameSession]:
     statement = (
         select(GameSession)
-        .where(GameSession.user_id==user.id)
+        .where(GameSession.user_id==user_id)
     )
     result = await session.exec(statement)
     user_game_sessions = result.all()
     return user_game_sessions
+
+async def get_last_user_game_session(
+        session: AsyncSession, user_id: str
+) -> GameSession:
+    statement = (
+        select(GameSession)
+        .where(GameSession.user_id==user_id)
+    ).order_by(GameSession.session_date.desc())
+    result = await session.exec(statement)
+    user_game_session = result.first()
+    return user_game_session
 
 async def create_game_session(
         session: AsyncSession, user_id: str, score: int
