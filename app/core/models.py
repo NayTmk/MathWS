@@ -18,7 +18,7 @@ class UserBase(SQLModel):
 class UserPublic(SQLModel):
     username: str
     best_score: int | None
-    game_list: List['GameSessionPublic']
+    game_list: List['GameSessionPublic'] = []
 
 
 class UserCreate(UserBase):
