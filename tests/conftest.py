@@ -1,10 +1,11 @@
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, delete
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app import crud
 from app.main import app
 
 
@@ -42,7 +43,7 @@ async def auth_token(client):
     sign_up_payload = {'username': 'mark', 'password': 'qwerty'}
     await client.post('/api/user/sign-up', json=sign_up_payload)
     login_response = await client.post(
-        '/login/access-token', data=sign_up_payload
+        '/login/access-token', data=sign_up_payload,
     )
     jwt_token = login_response.json()['access_token']
     return {'Authorization': f'Bearer {jwt_token}'}

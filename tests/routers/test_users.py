@@ -1,5 +1,4 @@
 import pytest
-from httpx import AsyncClient, ASGITransport
 from tests.conftest import override_get_session, auth_token
 
 from app.main import app
@@ -19,10 +18,24 @@ async def test_register_user_post_200_and_userdata(client):
 
 @pytest.mark.asyncio
 async def test_read_me_get_200_and_user_data(client, auth_token):
-    response = await client.get('api/user/me', headers=auth_token)
+    response = await client.get('api/user/me')
     assert response.status_code == 200
     assert response.json()['username'] == 'mark'
 
 @pytest.mark.asyncio
-async def test_read_me_patch_200_and_user_data(client):
-    ...
+async def test_read_me_patch_200_and_user_data(client, auth_token):
+    response = await client.patch(
+        '/api/user/me', json={'username': 'qazwsx'}
+    )
+    assert response.status_code == 200
+    assert response.json()['username'] == 'qazwsx'
+
+@pytest.mark.asyncio
+async def test_me_password_200(client, auth_token):
+    response = await client.patch(
+        '/api/user/me/password', json={
+            'password': 'qwerty', 'new_password': 'zxcvb'
+        }
+    )
+    assert response.status_code == 200
+    assert response.json()['message'] == 'You\'r password was update!'
