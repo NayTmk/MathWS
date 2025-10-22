@@ -42,7 +42,7 @@ class UserLeaderBoard(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
-    best_score: int | None = Field(default=None)
+    best_score: int | None = Field(default=0)
 
     game_session: list['GameSession'] = Relationship(
         back_populates='user', cascade_delete=True

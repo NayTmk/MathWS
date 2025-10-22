@@ -1,12 +1,39 @@
 import asyncio
 import operator
 import random
+import jwt
 
 from typing import Dict, Any
+from sqlmodel.ext.asyncio.session import AsyncSession
 from starlette.websockets import WebSocket, WebSocketState
 
+from app import crud
+from app.core.config import settings
+from app.core.db import engine
 from app.utils.redis import set_score, delete_score, get_score, update_score
 
+
+async def get_user_id_from_websocket_cookies(
+        websocket: WebSocket
+) -> str:
+    token = websocket.cookies.get('access_token')
+    if not token:
+        await websocket.close(
+            code=1008, reason='JWT token missing'
+        )
+        return
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
+        )
+        user_id = payload.get('sub')
+    except jwt.InvalidTokenError:
+        await websocket.close(
+            code=1008, reason='Invalid JWT token'
+        )
+        return
+    return user_id
 
 class GameConnectionManager:
     def __init__(self):
@@ -20,7 +47,6 @@ class GameConnectionManager:
             'websocket': websocket, 'answer': None
         }
         await set_score(room_id, 0)
-
 
     async def disconnect(self, room_id: str):
         client = self.connected_clients.pop(room_id, None)
@@ -147,6 +173,14 @@ class GameManager:
         await asyncio.sleep(duration_time)
         await on_timeout(room_id)
 
+    @staticmethod
+    async def finish_game(room_id):
+        score = int(await get_score(room_id) or 0)
+        async with AsyncSession(engine) as session:
+            await crud.create_game_session(session, room_id, score)
+            await crud.update_user_best_score(session, room_id, score)
+        await connection_manager.send(room_id, 'Гра завершина!')
+        await connection_manager.disconnect(room_id)
 
 connection_manager = GameConnectionManager()
 task_manager = GameTaskManager()

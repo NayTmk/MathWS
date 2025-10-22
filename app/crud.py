@@ -1,13 +1,25 @@
+from fastapi import HTTPException
 from sqlmodel import select
-from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-
-from app.core.models import User, UserCreate, UserPublic, GameSession, GameSessionPublic
+from app.core.models import User, UserCreate, UserPublic, GameSession
 from app.utils.security import get_password_hash, verify_password
 
 
-async def create_user(session: AsyncSession, user_create: UserCreate) -> User:
+async def create_user(
+        session: AsyncSession, user_create: UserCreate
+) -> User:
+    statement = select(User).where(
+        (User.email == user_create.email) | (User.username == user_create.username)
+    )
+    result = await session.exec(statement)
+    existing_user = result.first()
+    if existing_user:
+        if existing_user.email == user_create.email:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        else:
+            raise HTTPException(status_code=400, detail="Username already taken")
+
     db_obj = User.model_validate(
         user_create, update={'hashed_password': get_password_hash(user_create.password)}
     )
@@ -15,7 +27,6 @@ async def create_user(session: AsyncSession, user_create: UserCreate) -> User:
     await session.commit()
     await session.refresh(db_obj)
     return db_obj
-
 
 async def get_user_by_username(
         session: AsyncSession, username: str

@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel.ext.asyncio.session import AsyncSession
+from starlette.websockets import WebSocket
 
 from app.core.db import get_session
 from app.utils.security import settings
@@ -21,7 +22,7 @@ TokenDep = Annotated[str, Depends(reusable_oauth2)]
 async def get_current_user(
         session: SessionDep, token: TokenDep,
         access_token: str = Cookie(default=None)
-) -> User | None:
+) -> User:
     try:
         if access_token:
             payload = jwt.decode(
@@ -34,7 +35,7 @@ async def get_current_user(
         token_data = TokenPayload(**payload)
     except(InvalidTokenError, ValidationError):
         raise HTTPException(
-            status_code=400,
+            status_code=401,
             detail='You are not authorized'
         )
     user = await session.get(User, token_data.sub)
