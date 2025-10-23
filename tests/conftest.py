@@ -5,10 +5,11 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+from app.core.config import settings
 from app.main import app
 
 
-DATA_BASE_URL = 'postgresql+asyncpg://nayt:qwerty@localhost:5432/mathproject_test'
+DATA_BASE_URL = settings.TEST_DATA_BASE_URL
 engine = create_async_engine(DATA_BASE_URL, future=True)
 TestingSessionLocal = async_sessionmaker(
     bind=engine, class_=AsyncSession, expire_on_commit=False

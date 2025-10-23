@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     DATA_BASE_URL: str
+    TEST_DATA_BASE_URL: str
 
     SECRET_KEY: str
     ALGORITHM: str

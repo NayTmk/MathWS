@@ -1,0 +1,12 @@
+POSTGRES_USER = username
+POSTGRES_PASSWORD = password
+DATA_BASE_URL = postgresql+asyncpg://username:password@localhost:5432/db_name
+TEST_DATA_BASE_URL = postgresql+asyncpg://username:password@localhost:5432/db_name
+SECRET_KEY = hex32
+ALGORITHM =
+ACCESS_TOKEN_EXPIRE_TIME = time
+
+REDIS_HOST =
+REDIS_PORT =
+REDIS_USERNAME = redis username
+REDIS_PASSWORD = password
