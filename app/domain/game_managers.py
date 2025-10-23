@@ -168,16 +168,17 @@ class GameManager:
         return msg
 
     async def get_timer(
-            self, room_id: str, duration_time: int, on_timeout
+            self, room_id: str, duration_time: int,
+            mode: str, on_timeout
     ):
         await asyncio.sleep(duration_time)
-        await on_timeout(room_id)
+        await on_timeout(room_id, mode)
 
     @staticmethod
-    async def finish_game(room_id):
+    async def finish_game(room_id, mode):
         score = int(await get_score(room_id) or 0)
         async with AsyncSession(engine) as session:
-            await crud.create_game_session(session, room_id, score)
+            await crud.create_game_session(session, room_id, mode, score)
             await crud.update_user_best_score(session, room_id, score)
         await connection_manager.send(room_id, 'Гра завершина!')
         await connection_manager.disconnect(room_id)

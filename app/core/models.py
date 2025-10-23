@@ -54,8 +54,8 @@ class GameSessionBase(SQLModel):
 
 
 class GameSessionPublic(GameSessionBase):
-    username: str | None
     session_date: datetime
+    mode: str
 
 
 class GameSession(GameSessionBase, table=True):
@@ -63,6 +63,7 @@ class GameSession(GameSessionBase, table=True):
     session_date: datetime = Field(
         default_factory=datetime.utcnow, nullable=False
     )
+    mode: str = Field(nullable=False, default='add')
     user_id: uuid.UUID = Field(foreign_key='user.id')
     user: 'User' = Relationship(back_populates='game_session')
 

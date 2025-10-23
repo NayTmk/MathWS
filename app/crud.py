@@ -81,9 +81,9 @@ async def get_last_user_game_session(
     return user_game_session
 
 async def create_game_session(
-        session: AsyncSession, user_id: str, score: int
+        session: AsyncSession, user_id: str, mode: str, score: int
 ):
-    game_session = GameSession(user_id=user_id, score=score)
+    game_session = GameSession(user_id=user_id, mode=mode, score=score)
     session.add(game_session)
     await session.commit()
     await session.refresh(game_session)

@@ -28,7 +28,7 @@ async def game(
     await connection_manager.connect(room_id, websocket)
 
     asyncio.create_task(
-        game_manager.get_timer(room_id, 120, game_manager.finish_game)
+        game_manager.get_timer(room_id, 120, mode, game_manager.finish_game)
     )
     try:
         while True:
