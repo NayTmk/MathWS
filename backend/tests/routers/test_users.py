@@ -1,8 +1,8 @@
 import pytest
-from tests.conftest import override_get_session, auth_token
+from backend.tests.conftest import override_get_session, auth_token
 
-from app.main import app
-from app.core.db import get_session
+from backend.app.main import app
+from backend.app.core.db import get_session
 
 
 app.dependency_overrides[get_session] = override_get_session

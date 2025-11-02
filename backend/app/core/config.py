@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = '.env'
 
-    TEMPLATES = Jinja2Templates(directory='app/templates')
+    TEMPLATES = Jinja2Templates(directory='backend/app/templates')
 
 
 settings = Settings()

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
-from app.routers import users, login, game, gamesessions
+from backend.app.routers import users
+from backend.app.routers import game, gamesessions, login
 
 
 def create_app():

@@ -5,8 +5,8 @@ from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.core.config import settings
-from app.main import app
+from backend.app.core.config import settings
+from backend.app.main import app
 
 
 DATA_BASE_URL = settings.TEST_DATA_BASE_URL

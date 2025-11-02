@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from app import crud
-from app.core.models import GameSessionPublic, UserLeaderBoard
-from app.utils.deps import SessionDep, CurrentUser
+from backend.app import crud
+from backend.app.core.models import GameSessionPublic, UserLeaderBoard
+from backend.app.utils.deps import SessionDep, CurrentUser
 
 router = APIRouter(prefix='/api/game', tags=['game'])
 

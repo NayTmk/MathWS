@@ -2,8 +2,8 @@ from fastapi import HTTPException
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from app.core.models import User, UserCreate, UserPublic, GameSession
-from app.utils.security import get_password_hash, verify_password
+from backend.app.core.models import User, UserCreate, UserPublic, GameSession
+from backend.app.utils.security import get_password_hash, verify_password
 
 
 async def create_user(
