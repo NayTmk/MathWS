@@ -7,10 +7,10 @@ from typing import Dict, Any
 from sqlmodel.ext.asyncio.session import AsyncSession
 from starlette.websockets import WebSocket, WebSocketState
 
-from backend.app import crud
-from backend.app.core.config import settings
-from backend.app.core.db import engine
-from backend.app.utils.redis import set_score, delete_score, get_score, update_score
+from app import crud
+from app.core.config import settings
+from app.core.db import engine
+from app.utils.redis import set_score, delete_score, get_score, update_score
 
 
 async def get_user_id_from_websocket_cookies(

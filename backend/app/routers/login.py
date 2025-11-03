@@ -6,10 +6,10 @@ from fastapi.params import Depends
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from backend.app.core.config import settings
-from backend.app.utils.deps import SessionDep
-from backend.app.utils import security
-from backend.app import crud
+from app.core.config import settings
+from app.utils.deps import SessionDep
+from app.utils import security
+from app import crud
 
 
 router = APIRouter(tags=['login'])

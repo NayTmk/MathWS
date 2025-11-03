@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     REDIS_USERNAME: str
     REDIS_PASSWORD: str
     class Config:
-        env_file = '.env'
+        env_file = '../.env'
 
-    TEMPLATES = Jinja2Templates(directory='backend/app/templates')
+    TEMPLATES = Jinja2Templates(directory='app/templates')
 
 
 settings = Settings()

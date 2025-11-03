@@ -1,14 +1,14 @@
 from fastapi import APIRouter, HTTPException
 from typing import Any
 
-from backend.app import crud
-from backend.app.core.models import (
+from app import crud
+from app.core.models import (
     UserPublic, UserCreate,
     UserUpdateData, UserUpdatePassword,
     Message
 )
-from backend.app.utils import security
-from backend.app.utils.deps import SessionDep, CurrentUser
+from app.utils import security
+from app.utils.deps import SessionDep, CurrentUser
 
 
 router = APIRouter(prefix='/api/user', tags=['user'])

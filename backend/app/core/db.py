@@ -1,7 +1,7 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from backend.app.core.config import settings
+from app.core.config import settings
 
 
 DATA_BASE_URL = settings.DATA_BASE_URL

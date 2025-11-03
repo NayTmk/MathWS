@@ -3,9 +3,9 @@ import asyncio
 from fastapi import APIRouter, WebSocket, Request, Query
 from starlette.websockets import WebSocketDisconnect
 
-from backend.app.core.config import settings
-from backend.app.utils.deps import CurrentUser
-from backend.app.domain.game_managers import (
+from app.core.config import settings
+from app.utils.deps import CurrentUser
+from app.domain.game_managers import (
     connection_manager, game_manager,
     get_user_id_from_websocket_cookies
 )

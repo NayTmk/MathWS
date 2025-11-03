@@ -8,9 +8,9 @@ from fastapi import HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from backend.app.core.db import get_session
-from backend.app.utils.security import settings
-from backend.app.core.models import User, TokenPayload
+from app.core.db import get_session
+from app.utils.security import settings
+from app.core.models import User, TokenPayload
 
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl='/login/access-token', auto_error=False)

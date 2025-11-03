@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: psgr
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - dbnet
+
+  adminer:
+      image: adminer
+      container_name: adminer
+      ports:
+        - "127.0.0.1:8080:8080"
+      links:
+        - "postgres:db"
+      networks:
+        - dbnet
+      depends_on:
+        - postgres
+
+  mathws:
+    build: ./backend
+    image: mathws
+    container_name: mathws
+    restart: always
+    command: "fastapi dev app/main.py --host 0.0.0.0 --port 8000"
+    env_file:
+      - .env
+    networks:
+      - dbnet
+    volumes:
+      - ./backend:/mathws
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - postgres
+
+
+networks:
+  dbnet:
+    driver: bridge
+
+volumes:
+  postgres-data:
