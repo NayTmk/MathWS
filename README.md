@@ -33,29 +33,64 @@ API побудовано на основі FastAPI із використання
   
 ---  
   
-## Встановлення та запуск  
-  
-### 1. Клонування репозиторію  
-```bash  
-git clone https://github.com/NayTmk/MathWS  
-cd MathWS
-```  
-  
-### 2. Сторіть віртуальне середовище
-```bash  
-python -m venv venv  
-source venv/bin/activate  # Linux / macOS  
-venv\Scripts\activate     # Windows 
-```
-### 3. Встановіть заленжості  
+## Встановлення та запуск
 
-```bash  
+### 1. Клонування репозиторію  
+```bash
+git clone <посилання-на-репозиторій>
+cd <назва-папки>
+```
+
+### 2. Створіть файл `.env`  
+Скопіюйте зразок і відредагуйте змінні:
+```bash
+cp env_example .env
+# або вручну створіть .env і вставте значення зі env_example
+```
+
+### 3. (Опціонально) Віртуальне середовище для локальної роботи без Docker  
+Якщо хочете запускати без Docker:
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux / macOS
+venv\Scripts\activate     # Windows
 pip install -r requirements.txt
-```  
-  
-### 4. Налаштуйте .env за зразком env_example  
-  
-### 5. Міграції бд  
-```bash  
+```
+> Але рекомендую запуск через Docker — нижче основні команди для цього.
+
+### 4. Перевірте Docker і Docker Compose  
+- Переконайтесь, що Docker встановлений і працює.
+
+Перевірка:
+```bash
+docker --version
+docker compose version   # або docker-compose --version
+```
+
+### 5. Запуск через Docker (рекомендовано)  
+У кореневій директорії:
+```bash
+docker compose up --build
+```
+Або для фонового режиму:
+```bash
+docker compose up --build -d
+```
+
+### 6. Перевірка після запуску
+- Документація OpenAPI: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Сторінка гри: [http://localhost:8000/game](http://localhost:8000/game)
+- Adminer (якщо задіяно в docker-compose): [http://localhost:8080](http://localhost:8080)
+
+### 7. Міграції бази даних (якщо запускається локально)
+```bash
+# приклад для alembic
 alembic upgrade head
+```
+
+### 8. Зупинка і очищення
+```bash
+docker compose down
+# або з видаленням томів і образів
+docker compose down --volumes --rmi local
 ```
