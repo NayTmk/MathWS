@@ -36,7 +36,7 @@
       if (ws.readyState === WebSocket.OPEN) {
         ws.send(input.value);
       } else {
-        alert("WebSocket не підключений!");
+        alert("WebSocket is not connected!");
       }
       input.value = '';
       event.preventDefault();

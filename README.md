@@ -1,96 +1,90 @@
 # MathWS  
   
-**MathWS** — асинхронний API для гри з вирішенням математичних прикладів у режимі реального часу.    
-Проєкт створено як практику моїх навичок і реалізацію власної ідеї, яка, на мою думку, має потенціал.  
+**MathWS** — asynchronous API for a real-time math solving game.
   
 ---  
   
-## Опис  
+## Description  
   
-MathWS — це серверна частина гри, яка дозволяє користувачам створювати та брати участь у математичних сесіях, вирішувати приклади й змагатися в реальному часі.    
-API побудовано на основі FastAPI із використанням асинхронного доступу до бази даних та авторизації через JWT і cookies.  
-  
----  
-  
-## Функціонал  
-  
-- Реєстрація та авторизація користувача (JWT + OAuth2)  
-- Аутентифікація через cookie для WebSocket-з'єднань  
-- CRUD для ігрових сесій, статистики та даних користувача  
-- Асинхронна робота з базою даних  
-- Механізм оновлення даних у реальному часі через WebSocket  
+**MathWS** is the backend (server-side) for the game. It allows users to create and participate in math sessions, solve problems, and compete with others in real-time.  
+The API is built with FastAPI, featuring asynchronous database access and authentication via JWT and cookies.
   
 ---  
   
-## Технології  
-  
-| Категорія | Використані технології           |     |
-| --------- | -------------------------------- | --- |
-| Backend   | FastAPI, SQLModel, Alembic       |     |
-| Database  | PostgreSQL                       |     |
-| Auth      | JWT, OAuth2, Cookies             |     |
-| Async     | asyncio, SQLAlchemy AsyncSession |     |
-  
----  
-  
-## Встановлення та запуск
+## Features
 
-### 1. Клонування репозиторію  
+- **User Registration & Authorization:** Secure login using JWT.
+- **WebSocket Authentication:** Cookie-based auth for secure WebSocket connections.
+- **Async Database:** Fully asynchronous database operations.
+- **Real-time Updates:** Instant data synchronization via WebSockets.
+- 
+---  
+  
+## Tech Stack
+
+| Category | Technology |
+| :--- | :--- |
+| **Backend** | FastAPI, SQLModel, Alembic |
+| **Database** | PostgreSQL |
+| **Auth** | JWT, OAuth2, Cookies |
+| **Async** | asyncio, SQLAlchemy AsyncSession |
+
+---  
+  
+## Installation and Setup
+
+### 1. Clone the repository
 ```bash
-git clone <посилання-на-репозиторій>
-cd <назва-папки>
+git clone https://github.com/NayTmk/MathWS
+cd backend
 ```
 
-### 2. Створіть файл `.env`  
-Скопіюйте зразок і відредагуйте змінні:
+### 2. Create a .env file
+Create a .env file. Copy the example and configure the variables:
 ```bash
 cp env_example .env
-# або вручну створіть .env і вставте значення зі env_example
 ```
 
-### 3. (Опціонально) Віртуальне середовище для локальної роботи без Docker  
-Якщо хочете запускати без Docker:
+### 3. (Optional) Local setup without Docker
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux / macOS
 venv\Scripts\activate     # Windows
 pip install -r requirements.txt
 ```
-> Але рекомендую запуск через Docker — нижче основні команди для цього.
+> However, I recommend running it via Docker — see the main commands below.
 
-### 4. Перевірте Docker і Docker Compose  
-- Переконайтесь, що Docker встановлений і працює.
+### 4. Check Docker and Docker Compose
 
-Перевірка:
+Verify Docker installation:
 ```bash
 docker --version
-docker compose version   # або docker-compose --version
+docker compose version   # // docker-compose --version
 ```
 
-### 5. Запуск через Docker (рекомендовано)  
-У кореневій директорії:
+### 5. Running via Docker (Recommended)
+In the root directory:
 ```bash
 docker compose up --build
 ```
-Або для фонового режиму:
+Or run in the background:
 ```bash
 docker compose up --build -d
 ```
 
-### 6. Перевірка після запуску
-- Документація OpenAPI: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Сторінка гри: [http://localhost:8000/game](http://localhost:8000/game)
-- Adminer (якщо задіяно в docker-compose): [http://localhost:8080](http://localhost:8080)
+### 6. Check status
+- OpenAPI Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Game page: [http://localhost:8000/game](http://localhost:8000/game)
+- Adminer if enabled in docker-compose: [http://localhost:8080](http://localhost:8080)
 
-### 7. Міграції бази даних (якщо запускається локально)
+### 7. Database Migrations (Local Setup)
 ```bash
-# приклад для alembic
 alembic upgrade head
 ```
 
-### 8. Зупинка і очищення
+### 8. Stopping and Cleanup
 ```bash
 docker compose down
-# або з видаленням томів і образів
+# with volumes and images removal
 docker compose down --volumes --rmi local
 ```

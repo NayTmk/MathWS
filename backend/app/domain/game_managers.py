@@ -69,32 +69,32 @@ class GameTaskManager:
     game_mods = {
         'add': {
             'ops': {'+': operator.add},
-            'description': 'Додавання'
+            'description': 'Addition'
         },
         'sub': {
             'ops': {'-': operator.sub},
-            'description': 'Віднімання'
+            'description': 'Subtraction'
         },
         'ml': {
             'ops': {'*': operator.mul},
-            'description': 'Множення'
+            'description': 'Multiplication'
         },
         'div': {
             'ops': {'/': operator.floordiv},
-            'description': 'Ділення'
+            'description': 'Division'
         },
         'ad_sub': {
             'ops': {'+': operator.add, '-': operator.sub},
-            'description': 'Додавання та віднімання'
+            'description': 'Addition and Subtraction'
         },
         'ml_div': {
             'ops': {'*': operator.mul, '/': operator.floordiv},
-            'description': 'Множення та ділення'
+            'description': 'Multiplication and Division'
         },
         'all_operations': {
             'ops': {'+': operator.add, '-': operator.sub,
                     '*': operator.mul, '/': operator.floordiv},
-            'description': 'Всі базові операції'
+            'description': 'All Basic Operations'
         }
     }
 
@@ -159,12 +159,12 @@ class GameManager:
     ):
         correct_answer = client['answer']
         if correct_answer is None:
-            msg = 'Вітаю!'
+            msg = 'Get ready! First problem:'
         elif client_answer == correct_answer:
-            msg = 'Вірно! Наступний приклад:'
+            msg = 'Correct! Next problem:'
             await update_score(room_id)
         else:
-            msg = 'Не правильно! Наступний приклад:'
+            msg = 'Incorrect! Next problem:'
         return msg
 
     async def get_timer(
@@ -180,7 +180,7 @@ class GameManager:
         async with AsyncSession(engine) as session:
             await crud.create_game_session(session, room_id, mode, score)
             await crud.update_user_best_score(session, room_id, score)
-        await connection_manager.send(room_id, 'Гра завершина!')
+        await connection_manager.send(room_id, 'Game over!')
         await connection_manager.disconnect(room_id)
 
 connection_manager = GameConnectionManager()
